@@ -1,0 +1,135 @@
+body {
+    background-color: #f2f2f2;
+}
+
+label {
+    margin-bottom: 10px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.containerTable {
+    margin: 0 auto;
+    width: 800px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+
+.addUser, .addDiv{
+    display: flex;
+    justify-content:space-between;
+}
+  
+.search-container input[type="text"] {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    align-items: center;
+}
+  
+.search-container button{
+    padding: 12px;
+    border: none;
+    background-color: #4CAF50;
+    color: #fff;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.autoriz, .addUser {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="text"], input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+button[type="submit"], button[type="Add"] {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover, button[type="Add"]:hover {
+    background-color: #3e8e41;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+  
+.button-primary {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+button[type="cancel"] {
+    background-color: #f8f9fa;
+    color: #ff0000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+} 
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #4CAF50;
+    color: rgb(0, 0, 0);
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover, button[type="cancel"]:hover {
+    background-color: #ebebeb;
+}
+
+tr[type="header"]:hover {
+    background-color: #357a37;
+}
+

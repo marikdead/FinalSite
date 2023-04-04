@@ -1,0 +1,14 @@
+{
+  "name": "log_site",
+  "version": "1.0.0",
+  "description": "site as education project Сайт для веба с тремя страничками и сервером на node.js",
+  "main": "app.test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^29.5.0"
+  }
+}
