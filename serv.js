@@ -2,10 +2,14 @@ const http = require('http')
 const path = require("path")
 const fs = require("fs")
 const rout = require('./router.js')
+const pool = require('./db.js')
 const host = 'localhost'
 const port = 8000
 
-const tableData = [{FIO: 'Скворцов Марк Владимирович', login:'marikdead'},{FIO: 'Смородин Валерий Русланович', login:'T0r1n'},{FIO: 'Евдокимов Ростислав Алексеевич', login:'FIDR1707'},{FIO: 'Поляков Михаил Михайлович', login:'GhostProkaznik'}]
+const dotenv = require("dotenv")
+const { log } = require('console')
+
+//const tableData = [{FIO: 'Скворцов Марк Владимирович', login:'marikdead'},{FIO: 'Смородин Валерий Русланович', login:'T0r1n'},{FIO: 'Евдокимов Ростислав Алексеевич', login:'FIDR1707'},{FIO: 'Поляков Михаил Михайлович', login:'GhostProkaznik'}]
 
 function indexPagehandler(request, response){
     return 'autorization.html';
@@ -19,7 +23,16 @@ function newUserPagehandler(request, response){
     return 'Inner/innerAdd.html';
 }
 
-function getTableDataHandler(request, response){
+async function getTableDataHandler(request, response){
+    const res = await pool.query('SELECT * FROM Users')
+    const tableData = [{}]
+    for (i of res.rows){
+        userdata = {
+            FIO: i['full_name'],
+            login: i["username"]
+        }
+        tableData.push(userdata)
+    }
     response.end(JSON.stringify(tableData.map(i => ({FIO: i.FIO, login:i.login})))); return;
 }
 
@@ -44,15 +57,6 @@ http.createServer((request, response)=>{
     const url = request.url
 
     let name = ''
-    /*switch(url){
-        case '/': name = 'autorization.html';  break;
-        case '/table': name = "Inner/innerTable.html"; break;
-        case '/new': name = 'Inner/innerAdd.html'; break;
-        case '/login': getparam(request, response); return;
-        case '/getTableData': response.end(JSON.stringify(tableData.map(i => ({FIO: i.FIO, login:i.login})))); return;
-        case '/addUser': user_add(request,response); return;
-        default: name = url
-    }*/
     if (url.endsWith('.css')){
         response.setHeader('content-type', 'text/css');
     }
@@ -67,13 +71,23 @@ http.createServer((request, response)=>{
     sait.pipe(response)}
 }).listen(port, host, ()=>{console.log("Server online")})
 
-
-
 const usermap = new Map();
 
-function auth(body){
-    if (usermap.has(body.key)) return true;
-    else return false;
+async function auth(login, password, request, response){
+    loginauth = 0
+    const res = await pool.query('SELECT * FROM Users')
+    for (i of res.rows){
+        if ((i['username'] == login) && (i['password'] == password)) { loginauth++}
+    }
+    if (loginauth > 0) {
+        response.statusCode = '200';
+        const token = {id:generate_token(10)};
+        console.log(usermap);
+        usermap.set(token,login)
+        response.end(JSON.stringify(token));}
+    else {
+        response.statusCode = '401';
+        response.end();}
 }
 
 function generate_token(length){
@@ -86,6 +100,10 @@ function generate_token(length){
     return b.join("");
 }
 
+async function Add(user, response){
+    const res = await pool.query("INSERT INTO Users (full_name,username, password) VALUES ('"+user.FIO+"', '"+user.login+"', '"+user.password+"')")
+    response.end()
+}
 
 function user_add(request, response){
     let data = []
@@ -96,13 +114,12 @@ function user_add(request, response){
     request.on('end', ()=>{
         console.log(request.headers.authorization);
         const user = JSON.parse(data.join());
-        tableData.push(user);
-        response.end()
+        Add(user,response)
     })
 }
 
 
-function getparam(request, response){
+async function getparam(request, response){
     
     let data = []
     request.on('data', dat2a=>{
@@ -110,21 +127,8 @@ function getparam(request, response){
     })
     
     request.on('end',()=>{
-        console.log('Данные ещё не отправил')
         const account = JSON.parse(data.join());
-        const login = {login: 'marikdead', password: 'qwerty'};
-        if ((account.login === login.login)&&(account.password === login.password)){
-            response.statusCode = '200';
-            const token = {id:generate_token(10)};
-            console.log(usermap);
-            usermap.set(token,account.login)
-            response.end(JSON.stringify(token));
-        }
-        else{
-            response.statusCode = '401';
-            response.end();
-        }
-        console.log(account)
+        auth(account.login, account.password, request, response)
     })
 
 }
